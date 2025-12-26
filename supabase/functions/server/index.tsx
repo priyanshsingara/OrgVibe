@@ -1,0 +1,88 @@
+import { Hono } from "npm:hono";
+import { cors } from "npm:hono/cors";
+import { logger } from "npm:hono/logger";
+import * as kv from "./kv_store.tsx";
+
+const app = new Hono();
+
+// Enable logger
+app.use('*', logger(console.log));
+
+// Enable CORS for all routes and methods
+app.use(
+  "/*",
+  cors({
+    origin: "*",
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+  }),
+);
+
+// Health check endpoint
+app.get("/make-server-6feba4f2/health", (c) => {
+  return c.json({ status: "ok" });
+});
+
+// Get reviews for an organization
+app.get("/make-server-6feba4f2/reviews/:orgId", async (c) => {
+  const orgId = c.req.param("orgId");
+  console.log(`Fetching reviews for org: ${orgId}`);
+  
+  try {
+    const reviews = await kv.getByPrefix(`review:${orgId}:`);
+    console.log(`Found ${reviews.length} reviews`);
+    
+    // Sort by timestamp descending
+    reviews.sort((a: any, b: any) => {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
+    
+    return c.json(reviews || []);
+  } catch (error: any) {
+    console.error("Error fetching reviews:", error);
+    return c.json({ error: "Failed to fetch reviews", details: error.message }, 500);
+  }
+});
+
+// Create a new review
+app.post("/make-server-6feba4f2/reviews", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { orgId, title, content, author, sentiment } = body;
+
+    if (!orgId || !title || !content || !author || !sentiment) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    const id = crypto.randomUUID();
+    const timestamp = new Date().toISOString();
+    
+    const newReview = {
+      id,
+      orgId,
+      title,
+      content, 
+      author,
+      timestamp, 
+      sentiment
+    };
+
+    // Key format: review:ORG_ID:REVIEW_ID
+    console.log(`Creating review: review:${orgId}:${id}`);
+    await kv.set(`review:${orgId}:${id}`, newReview);
+
+    return c.json(newReview, 201);
+  } catch (error: any) {
+    console.error("Error creating review:", error);
+    return c.json({ error: "Failed to create review", details: error.message }, 500);
+  }
+});
+
+// Catch-all to help debug 404s
+app.all('*', (c) => {
+    return c.json({ error: 'Route not found', path: c.req.path }, 404);
+});
+
+Deno.serve(app.fetch);
