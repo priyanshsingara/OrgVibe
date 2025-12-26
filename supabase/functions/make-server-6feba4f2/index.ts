@@ -1,7 +1,7 @@
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
-import * as kv from "./kv_store.tsx";
+import * as kv from "./kv_store.ts";
 
 const app = new Hono();
 
@@ -23,6 +23,52 @@ app.use(
 // Health check endpoint
 app.get("/make-server-6feba4f2/health", (c) => {
   return c.json({ status: "ok" });
+});
+
+// Get all organizations
+app.get("/make-server-6feba4f2/orgs", async (c) => {
+  console.log("Fetching all organizations");
+  
+  try {
+    const orgs = await kv.getByPrefix("org:");
+    console.log(`Found ${orgs.length} organizations`);
+    
+    // Sort alphabetically by name
+    orgs.sort((a: any, b: any) => a.name.localeCompare(b.name));
+    
+    return c.json(orgs || []);
+  } catch (error: any) {
+    console.error("Error fetching organizations:", error);
+    return c.json({ error: "Failed to fetch organizations", details: error.message }, 500);
+  }
+});
+
+// Create a new organization
+app.post("/make-server-6feba4f2/orgs", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { name } = body;
+
+    if (!name) {
+      return c.json({ error: "Missing required field: name" }, 400);
+    }
+
+    const id = crypto.randomUUID();
+    
+    const newOrg = {
+      id,
+      name: name.toLowerCase().trim()
+    };
+
+    // Key format: org:ORG_ID
+    console.log(`Creating organization: org:${id}`);
+    await kv.set(`org:${id}`, newOrg);
+
+    return c.json(newOrg, 201);
+  } catch (error: any) {
+    console.error("Error creating organization:", error);
+    return c.json({ error: "Failed to create organization", details: error.message }, 500);
+  }
 });
 
 // Get reviews for an organization

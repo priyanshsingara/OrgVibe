@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { CompanyView } from './components/CompanyView';
 import { NewVibeModal } from './components/NewVibeModal';
-import { organizations, Review } from './data';
+import { NewOrgModal } from './components/NewOrgModal';
+import { Organization, Review, organizations as fallbackOrganizations } from './data';
 import { projectId, publicAnonKey } from '../../utils/supabase/info';
-import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import { Toaster } from 'sonner';
 import '../styles/fonts.css';
@@ -12,16 +12,58 @@ import '../styles/fonts.css';
 const API_BASE_URL = `https://${projectId}.supabase.co/functions/v1/make-server-6feba4f2`;
 
 export default function App() {
-  const [selectedOrgId, setSelectedOrgId] = useState<string>(organizations[8].id); // Default to SBI
+  const [organizations, setOrganizations] = useState<Organization[]>(fallbackOrganizations);
+  const [selectedOrgId, setSelectedOrgId] = useState<string>(fallbackOrganizations[0].id);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVibeModalOpen, setIsVibeModalOpen] = useState(false);
+  const [isOrgModalOpen, setIsOrgModalOpen] = useState(false);
+  const [isOrgsLoading, setIsOrgsLoading] = useState(true);
 
   const selectedOrg = organizations.find(o => o.id === selectedOrgId) || organizations[0];
 
+  // Fetch organizations on mount
   useEffect(() => {
-    fetchReviews(selectedOrgId);
+    fetchOrganizations();
+  }, []);
+
+  // Fetch reviews when selected org changes
+  useEffect(() => {
+    if (selectedOrgId) {
+      fetchReviews(selectedOrgId);
+    }
   }, [selectedOrgId]);
+
+  const fetchOrganizations = async () => {
+    setIsOrgsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/orgs`, {
+        headers: {
+          'Authorization': `Bearer ${publicAnonKey}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch organizations: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        setOrganizations(data);
+        // Select first org if current selection doesn't exist in fetched orgs
+        if (!data.find((o: Organization) => o.id === selectedOrgId)) {
+          setSelectedOrgId(data[0].id);
+        }
+      } else {
+        // No orgs in DB, use fallback
+        console.log('No orgs in DB, using fallback');
+      }
+    } catch (error) {
+      console.error('Error fetching organizations:', error);
+      // Keep using fallback orgs
+    } finally {
+      setIsOrgsLoading(false);
+    }
+  };
 
   const fetchReviews = async (orgId: string) => {
     setIsLoading(true);
@@ -37,12 +79,7 @@ export default function App() {
       }
       const data = await response.json();
       
-      const formattedReviews = data.map((r: any) => ({
-        ...r,
-        timestamp: formatDistanceToNow(new Date(r.timestamp), { addSuffix: true })
-      }));
-      
-      setReviews(formattedReviews);
+      setReviews(data);
     } catch (error) {
       console.error('Error fetching reviews:', error);
       toast.error('Failed to load vibes');
@@ -52,8 +89,41 @@ export default function App() {
     }
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenVibeModal = () => {
+    setIsVibeModalOpen(true);
+  };
+
+  const handleOpenOrgModal = () => {
+    setIsOrgModalOpen(true);
+  };
+
+  const handleAddOrg = async (name: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orgs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${publicAnonKey}`
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create org: ${response.status} ${errorText}`);
+      }
+      
+      const newOrg = await response.json();
+      
+      // Add to state and select it
+      setOrganizations(prev => [...prev, newOrg].sort((a, b) => a.name.localeCompare(b.name)));
+      setSelectedOrgId(newOrg.id);
+      toast.success(`Added "${newOrg.name}" successfully!`);
+    } catch (error) {
+      console.error('Error creating org:', error);
+      toast.error('Failed to add organization');
+      throw error;
+    }
   };
 
   const handleSubmitVibe = async (data: { category: string; sentiment: 'good' | 'neutral' | 'bad'; content: string }) => {
@@ -82,12 +152,7 @@ export default function App() {
       
       const savedReview = await response.json();
       
-      const displayReview = {
-        ...savedReview,
-        timestamp: formatDistanceToNow(new Date(savedReview.timestamp), { addSuffix: true })
-      };
-
-      setReviews(prev => [displayReview, ...prev]);
+      setReviews(prev => [savedReview, ...prev]);
       toast.success('Vibe posted successfully!');
     } catch (error) {
       console.error('Error posting review:', error);
@@ -112,7 +177,8 @@ export default function App() {
         <Sidebar 
           organizations={organizations} 
           selectedOrgId={selectedOrgId} 
-          onSelectOrg={setSelectedOrgId} 
+          onSelectOrg={setSelectedOrgId}
+          onAddOrg={handleOpenOrgModal}
         />
 
         {/* View */}
@@ -125,16 +191,22 @@ export default function App() {
             <CompanyView 
               organization={selectedOrg} 
               reviews={reviews} 
-              onAddVibe={handleOpenModal}
+              onAddVibe={handleOpenVibeModal}
             />
           )}
         </main>
       </div>
 
       <NewVibeModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        isOpen={isVibeModalOpen} 
+        onClose={() => setIsVibeModalOpen(false)} 
         onSubmit={handleSubmitVibe} 
+      />
+
+      <NewOrgModal
+        isOpen={isOrgModalOpen}
+        onClose={() => setIsOrgModalOpen(false)}
+        onSubmit={handleAddOrg}
       />
     </div>
   );

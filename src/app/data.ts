@@ -13,6 +13,8 @@ export interface Review {
   sentiment: 'good' | 'bad' | 'neutral';
 }
 
+// Fallback organizations - used until backend is populated
+// After deploying the edge function, run the migration to populate DB
 export const organizations: Organization[] = [
   { id: '1', name: 'toddle' },
   { id: '2', name: 'tata consultancy services' },
@@ -43,5 +45,5 @@ export const organizations: Organization[] = [
   { id: '27', name: 'reliance industries' },
 ];
 
-// Initial mock reviews removed in favor of backend storage
+// Reviews are stored in the backend
 export const reviews: Review[] = [];
