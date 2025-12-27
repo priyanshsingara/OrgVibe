@@ -126,6 +126,49 @@ export default function App() {
     }
   };
 
+  const handleVote = async (reviewId: string, voteType: 'up' | 'down') => {
+    // Optimistic update
+    setReviews(prev => prev.map(review => {
+      if (review.id === reviewId) {
+        return {
+          ...review,
+          upvotes: voteType === 'up' ? (review.upvotes || 0) + 1 : review.upvotes || 0,
+          downvotes: voteType === 'down' ? (review.downvotes || 0) + 1 : review.downvotes || 0,
+        };
+      }
+      return review;
+    }));
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/reviews/${selectedOrgId}/${reviewId}/vote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${publicAnonKey}`
+        },
+        body: JSON.stringify({ voteType }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to vote');
+      }
+    } catch (error) {
+      console.error('Error voting:', error);
+      // Rollback optimistic update on error
+      setReviews(prev => prev.map(review => {
+        if (review.id === reviewId) {
+          return {
+            ...review,
+            upvotes: voteType === 'up' ? (review.upvotes || 1) - 1 : review.upvotes || 0,
+            downvotes: voteType === 'down' ? (review.downvotes || 1) - 1 : review.downvotes || 0,
+          };
+        }
+        return review;
+      }));
+      toast.error('Failed to record vote');
+    }
+  };
+
   const handleSubmitVibe = async (data: { category: string; sentiment: 'good' | 'neutral' | 'bad'; content: string }) => {
     const newReviewPayload = {
       orgId: selectedOrgId,
@@ -182,7 +225,7 @@ export default function App() {
         />
 
         {/* View */}
-        <main className="flex-1 h-full relative bg-[rgba(255,255,255,0.01)] backdrop-blur-[7.5px]">
+        <main className="flex-1 min-w-0 h-full relative bg-[rgba(255,255,255,0.01)] backdrop-blur-[7.5px]">
           {isLoading ? (
              <div className="flex items-center justify-center h-full">
                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
@@ -192,6 +235,7 @@ export default function App() {
               organization={selectedOrg} 
               reviews={reviews} 
               onAddVibe={handleOpenVibeModal}
+              onVote={handleVote}
             />
           )}
         </main>

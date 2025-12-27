@@ -112,7 +112,9 @@ app.post("/make-server-6feba4f2/reviews", async (c) => {
       content, 
       author,
       timestamp, 
-      sentiment
+      sentiment,
+      upvotes: 0,
+      downvotes: 0
     };
 
     // Key format: review:ORG_ID:REVIEW_ID
@@ -123,6 +125,43 @@ app.post("/make-server-6feba4f2/reviews", async (c) => {
   } catch (error: any) {
     console.error("Error creating review:", error);
     return c.json({ error: "Failed to create review", details: error.message }, 500);
+  }
+});
+
+// Vote on a review
+app.post("/make-server-6feba4f2/reviews/:orgId/:reviewId/vote", async (c) => {
+  const orgId = c.req.param("orgId");
+  const reviewId = c.req.param("reviewId");
+  
+  try {
+    const body = await c.req.json();
+    const { voteType } = body;
+
+    if (!voteType || (voteType !== 'up' && voteType !== 'down')) {
+      return c.json({ error: "Invalid voteType. Must be 'up' or 'down'" }, 400);
+    }
+
+    // Get existing review
+    const review = await kv.get(`review:${orgId}:${reviewId}`);
+    if (!review) {
+      return c.json({ error: "Review not found" }, 404);
+    }
+
+    // Update vote count
+    if (voteType === 'up') {
+      review.upvotes = (review.upvotes || 0) + 1;
+    } else {
+      review.downvotes = (review.downvotes || 0) + 1;
+    }
+
+    // Save updated review
+    await kv.set(`review:${orgId}:${reviewId}`, review);
+
+    console.log(`Vote recorded: ${voteType} on review ${reviewId}`);
+    return c.json(review);
+  } catch (error: any) {
+    console.error("Error voting on review:", error);
+    return c.json({ error: "Failed to vote on review", details: error.message }, 500);
   }
 });
 

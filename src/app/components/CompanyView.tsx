@@ -9,9 +9,10 @@ interface CompanyViewProps {
   organization: Organization;
   reviews: Review[];
   onAddVibe: () => void;
+  onVote: (reviewId: string, voteType: 'up' | 'down') => void;
 }
 
-export function CompanyView({ organization, reviews, onAddVibe }: CompanyViewProps) {
+export function CompanyView({ organization, reviews, onAddVibe, onVote }: CompanyViewProps) {
   return (
     <div className="flex flex-col w-full h-full p-[48px] pt-[32px] overflow-y-auto">
       {/* Title */}
@@ -42,7 +43,7 @@ export function CompanyView({ organization, reviews, onAddVibe }: CompanyViewPro
         >
           <Masonry gutter="16px">
             {reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard key={review.id} review={review} onVote={onVote} />
             ))}
           </Masonry>
         </ResponsiveMasonry>

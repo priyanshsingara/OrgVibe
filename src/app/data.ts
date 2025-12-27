@@ -11,6 +11,8 @@ export interface Review {
   author: string;
   timestamp: string;
   sentiment: 'good' | 'bad' | 'neutral';
+  upvotes: number;
+  downvotes: number;
 }
 
 // Fallback organizations - used until backend is populated
