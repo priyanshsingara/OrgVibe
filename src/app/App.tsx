@@ -27,12 +27,12 @@ export default function App() {
     fetchOrganizations();
   }, []);
 
-  // Fetch reviews when selected org changes
+  // Fetch reviews when selected org changes (only after orgs are loaded)
   useEffect(() => {
-    if (selectedOrgId) {
+    if (selectedOrgId && !isOrgsLoading) {
       fetchReviews(selectedOrgId);
     }
-  }, [selectedOrgId]);
+  }, [selectedOrgId, isOrgsLoading]);
 
   const fetchOrganizations = async () => {
     setIsOrgsLoading(true);
@@ -215,7 +215,7 @@ export default function App() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 h-full pt-[73px]">
+      <div className="flex flex-1 min-h-0 pt-[73px]">
         {/* Sidebar */}
         <Sidebar 
           organizations={organizations} 
@@ -225,7 +225,7 @@ export default function App() {
         />
 
         {/* View */}
-        <main className="flex-1 min-w-0 h-full relative bg-[rgba(255,255,255,0.01)] backdrop-blur-[7.5px]">
+        <main className="flex-1 min-w-0 min-h-0 relative bg-[rgba(255,255,255,0.01)] backdrop-blur-[7.5px]">
           {isLoading ? (
              <div className="flex items-center justify-center h-full">
                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>

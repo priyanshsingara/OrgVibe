@@ -18,13 +18,13 @@ export function CompanyView({ organization, reviews, onAddVibe, onVote }: Compan
       {/* Title */}
       <ScrambleText 
         text={organization.name}
-        className="font-['Gasoek_One',sans-serif] leading-[1.1] text-[clamp(50px,10vw,120px)] text-white drop-shadow-[0px_4px_4px_rgba(0,0,0,0.25)] mb-[40px] break-words uppercase"
+        className="font-['Gasoek_One',sans-serif] leading-[1.1] text-[clamp(50px,10vw,120px)] text-white drop-shadow-[0px_4px_4px_rgba(0,0,0,0.25)] mb-[40px] break-words uppercase flex-shrink-0"
       />
 
       {/* Add Button */}
       <button 
         onClick={onAddVibe}
-        className="w-full mb-[40px] group focus:outline-none"
+        className="w-full mb-[40px] group focus:outline-none flex-shrink-0"
       >
         <div className="backdrop-blur-[18px] bg-[rgba(255,255,255,0.1)] relative rounded-[8px] w-full border-2 border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.15)] transition-colors">
           <div className="flex flex-row items-center justify-center p-[16px] gap-[8px]">
