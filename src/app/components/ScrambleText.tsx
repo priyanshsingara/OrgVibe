@@ -67,7 +67,7 @@ export function ScrambleText({ text, className }: ScrambleTextProps) {
     // sits exactly on top of the ghost text.
     // overflow-hidden prevents the scramble text from visually overlapping other elements.
     <h1 
-      className={`${className} relative inline-block overflow-hidden`} 
+      className={`${className} relative block overflow-hidden`} 
     >
       {/* Ghost text - invisible but defines the layout size */}
       <span className="invisible">{text}</span>

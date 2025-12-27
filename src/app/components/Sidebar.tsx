@@ -12,7 +12,7 @@ interface SidebarProps {
 
 export function Sidebar({ organizations, selectedOrgId, onSelectOrg, onAddOrg }: SidebarProps) {
   return (
-    <div className="flex flex-col w-[300px] h-full bg-[#0a0b36] border-r border-[rgba(255,255,255,0.2)] border-dashed">
+    <div className="flex flex-col w-[300px] shrink-0 h-full bg-[#0a0b36] border-r border-[rgba(255,255,255,0.2)] border-dashed">
       {/* Actions */}
       <div className="flex flex-col w-full shrink-0">
         {/* Add New Org */}
@@ -37,7 +37,7 @@ export function Sidebar({ organizations, selectedOrgId, onSelectOrg, onAddOrg }:
       </div>
 
       {/* List */}
-      <div className="flex-1 w-full overflow-y-auto">
+      <div className="flex-1 w-full overflow-y-scroll">
         <div className="flex flex-col w-full pb-4">
           {organizations.map((org) => {
             const isSelected = org.id === selectedOrgId;
