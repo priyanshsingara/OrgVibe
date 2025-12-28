@@ -251,6 +251,7 @@ export default function App() {
         isOpen={isOrgModalOpen}
         onClose={() => setIsOrgModalOpen(false)}
         onSubmit={handleAddOrg}
+        organizations={organizations}
       />
     </div>
   );

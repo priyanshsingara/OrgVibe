@@ -39,6 +39,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Warning color for error states (orange #f60) */
+  --warning: #ff6600;
+  --warning-foreground: #ffffff;
+  /* Muted text variants for different opacity levels */
+  --muted-foreground-secondary: rgba(0, 0, 0, 0.5); /* For placeholder/instruction text */
+  --muted-foreground-tertiary: #b2b2b2; /* For header text */
 }
 
 .dark {
@@ -117,6 +123,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-muted-foreground-secondary: var(--muted-foreground-secondary);
+  --color-muted-foreground-tertiary: var(--muted-foreground-tertiary);
 }
 
 @layer base {
