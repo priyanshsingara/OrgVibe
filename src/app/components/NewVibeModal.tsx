@@ -130,7 +130,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.2 }}
+            animate={{ opacity: 0.3 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-white z-[9998]"
@@ -279,7 +279,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                       onClick={isSubmitting ? undefined : handleSubmit}
                       className={`bg-black relative rounded-[8px] shrink-0 w-full mt-8 cursor-pointer hover:bg-gray-900 transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <div aria-hidden="true" className="absolute border-2 border-[rgba(255,255,255,0.2)] border-solid inset-0 pointer-events-none rounded-[8px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.35)]" />
+                      <div aria-hidden="true" className="absolute border-2 border-[rgba(255,255,255,0.2)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                       <div className="flex flex-row items-center size-full">
                         <div className="content-stretch flex items-center justify-between px-[24px] py-[20px] relative w-full">
                           <p className="basis-0 font-['Geist_Mono',monospace] font-black grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[20px] text-white tracking-[0.6px]">

@@ -109,7 +109,7 @@ export function NewOrgModal({ isOpen, onClose, onSubmit, organizations }: NewOrg
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.2 }}
+            animate={{ opacity: 0.3 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-white z-[9998]"
