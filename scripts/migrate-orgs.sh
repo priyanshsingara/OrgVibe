@@ -52,3 +52,8 @@ echo "Migration complete! Verifying..."
 curl -s "$API_URL" -H "Authorization: Bearer $AUTH_TOKEN" | head -c 500
 echo ""
 
+
+
+
+
+

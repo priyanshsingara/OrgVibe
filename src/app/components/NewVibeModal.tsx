@@ -91,7 +91,7 @@ function CheckFat() {
 
 export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
   const [category, setCategory] = useState<string>("");
-  const [sentiment, setSentiment] = useState<'good' | 'neutral' | 'bad' | null>('good');
+  const [sentiment, setSentiment] = useState<'good' | 'neutral' | 'bad' | null>(null);
   const [content, setContent] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -130,7 +130,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.3 }}
+            animate={{ opacity: 0.2 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-white z-[9998]"
@@ -152,7 +152,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                 <div className="flex flex-row items-center size-full">
                   <div className="content-stretch flex items-center justify-between relative w-full p-[20px]">
                     <ReceiptX onClick={onClose} />
-                    <p className="font-['Geist_Mono',monospace] font-bold leading-[1.1] relative shrink-0QX text-[#b2b2b2] text-[20px] text-nowrap">new vibe</p>
+                    <p className="font-['Geist_Mono:Bold',sans-serif] font-bold leading-[1.1] relative shrink-0QX text-[#b2b2b2] text-[20px] text-nowrap">new vibe</p>
                   </div>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                       
                       {/* Category Selection */}
                       <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full z-20">
-                        <p className="font-['Geist_Mono',monospace] font-medium leading-[1.1] relative shrink-0 text-[#222] text-[14px] text-nowrap tracking-[0.28px] uppercase">at what stage did you experience this?</p>
+                        <p className="font-['Geist_Mono:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#222] text-[14px] text-nowrap tracking-[0.28px] uppercase">at what stage did you experience this?</p>
                         
                         <div className="relative w-full">
                           <div 
@@ -177,7 +177,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                             <div aria-hidden="true" className="absolute border-[#8c8c8c] border-[0.5px] border-dashed inset-0 pointer-events-none rounded-[8px]" />
                             <div className="flex flex-row items-center justify-center size-full">
                               <div className="content-stretch flex gap-[8px] items-center justify-center p-[16px] relative w-full">
-                                <p className={`basis-0 font-['Geist_Mono',monospace] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[16px] ${category ? 'text-black' : 'text-[#6f6f6f]'}`}>
+                                <p className={`basis-0 font-['Geist_Mono:Regular',sans-serif] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[16px] ${category ? 'text-black' : 'text-[#6f6f6f]'}`}>
                                   {category || "select category"}
                                 </p>
                                 <CaretDown />
@@ -194,7 +194,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                                     setCategory(cat);
                                     setIsDropdownOpen(false);
                                   }}
-                                  className="px-[16px] py-[12px] hover:bg-gray-100 cursor-pointer font-['Geist_Mono',monospace] text-[16px] text-black"
+                                  className="px-[16px] py-[12px] hover:bg-gray-100 cursor-pointer font-['Geist_Mono:Regular',sans-serif] text-[16px] text-black"
                                 >
                                   {cat}
                                 </div>
@@ -206,7 +206,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
 
                       {/* Sentiment Selection */}
                       <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-                        <p className="font-['Geist_Mono',monospace] font-medium leading-[1.1] relative shrink-0 text-[#222] text-[14px] text-nowrap tracking-[0.28px] uppercase">vibe check!!!!!</p>
+                        <p className="font-['Geist_Mono:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#222] text-[14px] text-nowrap tracking-[0.28px] uppercase">vibe check!!!!!</p>
                         <div className="content-stretch flex gap-[12px] items-start relative shrink-0 w-full">
                           
                           {/* Good Vibe */}
@@ -214,10 +214,10 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                             onClick={() => setSentiment('good')}
                             className={`basis-0 grow min-h-px min-w-px relative rounded-[8px] shrink-0 cursor-pointer transition-all ${sentiment === 'good' ? 'bg-green-50' : 'hover:bg-gray-50'}`}
                           >
-                            <div aria-hidden="true" className={`absolute ${sentiment === 'good' ? 'border-[#34c759] border-2 border-solid' : 'border-[#8c8c8c] border-[0.5px] border-dashed'} inset-0 pointer-events-none rounded-[8px] transition-all`} />
+                            <div aria-hidden="true" className={`absolute border-[0.5px] ${sentiment === 'good' ? 'border-[#34c759] border-2 border-solid' : 'border-[#8c8c8c] border-dashed'} inset-0 pointer-events-none rounded-[8px] transition-all`} />
                             <div className="flex flex-row items-center justify-center size-full">
                               <div className="content-stretch flex gap-[8px] items-center justify-center p-[16px] relative w-full">
-                                <p className={`basis-0 font-['Geist_Mono',monospace] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[16px] transition-colors ${sentiment === 'good' ? 'text-black' : 'text-[#6f6f6f]'}`}>good vibe</p>
+                                <p className="basis-0 font-['Geist_Mono:Regular',sans-serif] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[16px] text-black">good vibe</p>
                                 <Heart isActive={sentiment === 'good'} />
                               </div>
                             </div>
@@ -228,10 +228,10 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                             onClick={() => setSentiment('neutral')}
                             className={`basis-0 grow min-h-px min-w-px relative rounded-[8px] shrink-0 cursor-pointer transition-all ${sentiment === 'neutral' ? 'bg-yellow-50' : 'hover:bg-gray-50'}`}
                           >
-                            <div aria-hidden="true" className={`absolute ${sentiment === 'neutral' ? 'border-[#FFD700] border-2 border-solid' : 'border-[#8c8c8c] border-[0.5px] border-dashed'} inset-0 pointer-events-none rounded-[8px] transition-all`} />
+                            <div aria-hidden="true" className={`absolute border-[0.5px] ${sentiment === 'neutral' ? 'border-[#FFD700] border-2 border-solid' : 'border-[#8c8c8c] border-dashed'} inset-0 pointer-events-none rounded-[8px] transition-all`} />
                             <div className="flex flex-row items-center justify-center size-full">
                               <div className="content-stretch flex gap-[8px] items-center justify-center p-[16px] relative w-full">
-                                <p className={`basis-0 font-['Geist_Mono',monospace] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[16px] transition-colors ${sentiment === 'neutral' ? 'text-black' : 'text-[#6f6f6f]'}`}>mid vibe</p>
+                                <p className="basis-0 font-['Geist_Mono:Regular',sans-serif] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[#6f6f6f] text-[16px]">mid vibe</p>
                                 <HeartHalf isActive={sentiment === 'neutral'} />
                               </div>
                             </div>
@@ -242,10 +242,10 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                             onClick={() => setSentiment('bad')}
                             className={`basis-0 grow min-h-px min-w-px relative rounded-[8px] shrink-0 cursor-pointer transition-all ${sentiment === 'bad' ? 'bg-red-50' : 'hover:bg-gray-50'}`}
                           >
-                            <div aria-hidden="true" className={`absolute ${sentiment === 'bad' ? 'border-[#FF3B30] border-2 border-solid' : 'border-[#8c8c8c] border-[0.5px] border-dashed'} inset-0 pointer-events-none rounded-[8px] transition-all`} />
+                            <div aria-hidden="true" className={`absolute border-[0.5px] ${sentiment === 'bad' ? 'border-[#FF3B30] border-2 border-solid' : 'border-[#8c8c8c] border-dashed'} inset-0 pointer-events-none rounded-[8px] transition-all`} />
                             <div className="flex flex-row items-center justify-center size-full">
                               <div className="content-stretch flex gap-[8px] items-center justify-center p-[16px] relative w-full">
-                                <p className={`basis-0 font-['Geist_Mono',monospace] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[16px] transition-colors ${sentiment === 'bad' ? 'text-black' : 'text-[#6f6f6f]'}`}>bad vibe</p>
+                                <p className="basis-0 font-['Geist_Mono:Regular',sans-serif] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[#6f6f6f] text-[16px]">bad vibe</p>
                                 <HeartBreak isActive={sentiment === 'bad'} />
                               </div>
                             </div>
@@ -256,7 +256,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
 
                       {/* Content Textarea */}
                       <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full grow">
-                        <p className="font-['Geist_Mono',monospace] font-medium leading-[1.1] relative shrink-0 text-[#222] text-[14px] text-nowrap tracking-[0.28px] uppercase">describe how was the vibe?</p>
+                        <p className="font-['Geist_Mono:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#222] text-[14px] text-nowrap tracking-[0.28px] uppercase">describe how was the vibe?</p>
                         <div className="h-[279px] relative rounded-[8px] shrink-0 w-full grow">
                           <div aria-hidden="true" className="absolute border-[#8c8c8c] border-[0.5px] border-dashed inset-0 pointer-events-none rounded-[8px]" />
                           <div className="size-full">
@@ -265,7 +265,7 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 placeholder="start ranting here..."
-                                className="basis-0 font-['Geist_Mono',monospace] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[#222] text-[16px] outline-none resize-none h-full bg-transparent placeholder-[#6f6f6f]"
+                                className="basis-0 font-['Geist_Mono:Regular',sans-serif] font-normal grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[#222] text-[16px] outline-none resize-none h-full bg-transparent placeholder-[#6f6f6f]"
                               />
                             </div>
                           </div>
@@ -279,10 +279,10 @@ export function NewVibeModal({ isOpen, onClose, onSubmit }: NewVibeModalProps) {
                       onClick={isSubmitting ? undefined : handleSubmit}
                       className={`bg-black relative rounded-[8px] shrink-0 w-full mt-8 cursor-pointer hover:bg-gray-900 transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <div aria-hidden="true" className="absolute border-2 border-[rgba(255,255,255,0.2)] border-solid inset-0 pointer-events-none rounded-[8px]" />
+                      <div aria-hidden="true" className="absolute border-2 border-[rgba(255,255,255,0.2)] border-solid inset-0 pointer-events-none rounded-[8px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.35)]" />
                       <div className="flex flex-row items-center size-full">
                         <div className="content-stretch flex items-center justify-between px-[24px] py-[20px] relative w-full">
-                          <p className="basis-0 font-['Geist_Mono',monospace] font-black grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[20px] text-white tracking-[0.6px]">
+                          <p className="basis-0 font-['Geist_Mono:Black',sans-serif] font-black grow leading-[1.1] min-h-px min-w-px relative shrink-0 text-[20px] text-white tracking-[0.6px]">
                             {isSubmitting ? "POSTING..." : "DONE! ADD TO VIBES"}
                           </p>
                           {!isSubmitting && <CheckFat />}
